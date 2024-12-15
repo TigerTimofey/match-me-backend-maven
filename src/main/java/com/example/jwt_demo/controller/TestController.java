@@ -16,10 +16,10 @@ public class TestController {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/all")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+//    @GetMapping("/all")
+//    public List<User> getAllUsers() {
+//        return userRepository.findAll();
+//    }
 
     @GetMapping("/user")
     public String userAccess() {

@@ -1,6 +1,8 @@
 package com.example.jwt_demo.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -15,15 +17,38 @@ public class User {
 
     private String password;
 
+    private String name;
+
+    private String lastname;
+
+    private String city;
+
+    private Integer age;
+
+    private String gender;
+
+    @ElementCollection
+    private List<String> languages = new ArrayList<>();
+
+    @ElementCollection
+    private List<String> hobbies = new ArrayList<>();
+
     // Default Constructor
     public User() {
     }
 
-    // All-Args Constructor
-    public User(Long id, String username, String password) {
+    // Full Constructor
+    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.name = name;
+        this.lastname = lastname;
+        this.city = city;
+        this.age = age;
+        this.gender = gender;
+        this.languages = languages;
+        this.hobbies = hobbies;
     }
 
     // Getters and Setters
@@ -49,5 +74,61 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public List<String> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
+    }
+
+    public List<String> getHobbies() {
+        return hobbies;
+    }
+
+    public void setHobbies(List<String> hobbies) {
+        this.hobbies = hobbies;
     }
 }
