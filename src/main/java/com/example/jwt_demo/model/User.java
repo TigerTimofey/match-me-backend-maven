@@ -33,12 +33,14 @@ public class User {
     @ElementCollection
     private List<String> hobbies = new ArrayList<>();
 
+    private String image;
+
     // Default Constructor
     public User() {
     }
 
     // Full Constructor
-    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies) {
+    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -49,6 +51,7 @@ public class User {
         this.gender = gender;
         this.languages = languages;
         this.hobbies = hobbies;
+        this.image = image;
     }
 
     // Getters and Setters
@@ -130,5 +133,9 @@ public class User {
 
     public void setHobbies(List<String> hobbies) {
         this.hobbies = hobbies;
+    }
+
+    public String getImage() {
+        return image;
     }
 }

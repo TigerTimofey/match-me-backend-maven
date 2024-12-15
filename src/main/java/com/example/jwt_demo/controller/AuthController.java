@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.List;
 
@@ -52,7 +54,8 @@ public class AuthController {
                 user.getAge(),
                 user.getGender(),
                 user.getLanguages(),
-                user.getHobbies()
+                user.getHobbies(),
+                user.getImage()
         );
         userRepository.save(newUser);
         return "User registered successfully!";
@@ -71,5 +74,22 @@ public class AuthController {
         } else {
             return "Error: User not found!";
         }
+    }
+
+//    /users/{id}: which returns the user's name and link to the profile picture.
+//      /me: which is a shortcut to /users/{id}
+    @GetMapping("/users/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userRepository.findById(id).orElse(null); // Ensure it returns a User object
+    }
+    // BY ADDING BEARER OF USER
+    @GetMapping("/me")
+    public User getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Import this line
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            return userRepository.findByUsername(username);
+        }
+        return null;
     }
 }
