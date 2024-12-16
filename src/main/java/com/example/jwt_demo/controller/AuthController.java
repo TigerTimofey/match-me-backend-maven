@@ -1,7 +1,7 @@
 package com.example.jwt_demo.controller;
 import java.util.HashMap;
 import java.util.Map;
-
+import java.util.Optional;
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
 import com.example.jwt_demo.security.JwtUtil;
@@ -159,30 +159,33 @@ public Map<String, Object> getMyProfile() {
         return response;
     }
 // You should also implement /me/bio.
-@GetMapping("/me/bio")
-public Map<String, Object> getMyBio() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication != null && authentication.isAuthenticated()) {
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-        User user = userRepository.findByUsername(username);
+    @GetMapping("/me/bio")
+    public Map<String, Object> getMyBio() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        // Check if user is null (not found)
-        if (user == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+
+            User user = userRepository.findByUsername(username);
+
+            if (user == null) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Пользователь не найден");
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("name", user.getName());
+            response.put("lastname", user.getLastname());
+            response.put("city", user.getCity());
+            response.put("age", user.getAge());
+            response.put("gender", user.getGender());
+            response.put("hobbies", user.getHobbies());
+
+            return response;
         }
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("name", user.getName());
-        response.put("lastname", user.getLastname());
-        response.put("city", user.getCity());
-        response.put("age", user.getAge());
-        response.put("gender", user.getGender());
-        response.put("hobbies", user.getHobbies());
-
-        return response;
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Hеавторизован - неверный или отсутствующий Bearer-токен");
     }
-    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
-}
+
 
 }

@@ -33,4 +33,31 @@ public class GlobalExceptionHandler {
         errorDetails.put("message", ex.getReason());
         return new ResponseEntity<>(errorDetails, status);
     }
+
+    @ExceptionHandler(ClassCastException.class)
+    public ResponseEntity<Map<String, Object>> handleClassCastException(ClassCastException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", LocalDateTime.now());
+
+        HttpStatus status = HttpStatus.UNAUTHORIZED; // Specifically handle unauthorized access
+        errorDetails.put("status", status.value());
+        errorDetails.put("error", "Unauthorized");
+        errorDetails.put("message", "Unauthorized user - invalid or missing Bearer token");
+
+        return new ResponseEntity<>(errorDetails, status);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", LocalDateTime.now());
+
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+
+        errorDetails.put("status", status.value());
+        errorDetails.put("error", "Internal Server Error");
+        errorDetails.put("message", ex.getMessage() != null ? ex.getMessage() : "Unexpected error occurred");
+
+        return new ResponseEntity<>(errorDetails, status);
+    }
 }
