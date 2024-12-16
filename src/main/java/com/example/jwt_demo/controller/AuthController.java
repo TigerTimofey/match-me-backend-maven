@@ -1,4 +1,6 @@
 package com.example.jwt_demo.controller;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
@@ -10,6 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 
 
 import java.util.List;
@@ -55,7 +60,8 @@ public class AuthController {
                 user.getGender(),
                 user.getLanguages(),
                 user.getHobbies(),
-                user.getImage()
+                user.getImage(),
+                user.getAboutme()
         );
         userRepository.save(newUser);
         return "User registered successfully!";
@@ -79,9 +85,17 @@ public class AuthController {
 //    /users/{id}: which returns the user's name and link to the profile picture.
 //      /me: which is a shortcut to /users/{id}
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userRepository.findById(id).orElse(null); // Ensure it returns a User object
+    public Map<String, Object> getUserById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", user.getName());
+        response.put("image", user.getImage());
+
+        return response;
     }
+
     // BY ADDING BEARER OF USER
     @GetMapping("/me")
     public User getMe() {
@@ -92,4 +106,83 @@ public class AuthController {
         }
         return null;
     }
+
+    // /users/{id}/profile: which returns the users "about me" type information.
+
+    @GetMapping("/users/{id}/profile")
+    public Map<String, Object> getUserProfileById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", user.getName());
+        response.put("lastname", user.getLastname());
+        response.put("languages", user.getLanguages());
+        response.put("aboutme", user.getAboutme());
+
+        return response;
+    }
+//    you should also implement /me/profile
+@GetMapping("/me/profile")
+public Map<String, Object> getMyProfile() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // Import this line
+    if (authentication != null && authentication.isAuthenticated()) {
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", user.getName());
+        response.put("lastname", user.getLastname());
+        response.put("languages", user.getLanguages());
+        response.put("aboutme", user.getAboutme());
+
+        return response;
+    }
+    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+}
+
+// /users/{id}/bio: which returns the users biographical data (the data used to power recommendations).
+
+    @GetMapping("/users/{id}/bio")
+    public Map<String, Object> getUserBioById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", user.getName());
+        response.put("lastname", user.getLastname());
+        response.put("city", user.getCity());
+        response.put("age", user.getAge());
+        response.put("genres", user.getGender());
+        response.put("hobbies", user.getHobbies());
+
+        return response;
+    }
+// You should also implement /me/bio.
+@GetMapping("/me/bio")
+public Map<String, Object> getMyBio() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+    if (authentication != null && authentication.isAuthenticated()) {
+        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        User user = userRepository.findByUsername(username);
+
+        // Check if user is null (not found)
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", user.getName());
+        response.put("lastname", user.getLastname());
+        response.put("city", user.getCity());
+        response.put("age", user.getAge());
+        response.put("gender", user.getGender());
+        response.put("hobbies", user.getHobbies());
+
+        return response;
+    }
+    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+}
+
 }

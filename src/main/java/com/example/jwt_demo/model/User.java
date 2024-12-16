@@ -35,12 +35,14 @@ public class User {
 
     private String image;
 
+    private String aboutme;
+
     // Default Constructor
     public User() {
     }
 
     // Full Constructor
-    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image) {
+    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image, String aboutme) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -52,6 +54,7 @@ public class User {
         this.languages = languages;
         this.hobbies = hobbies;
         this.image = image;
+        this.aboutme = aboutme;
     }
 
     // Getters and Setters
@@ -137,5 +140,8 @@ public class User {
 
     public String getImage() {
         return image;
+    }
+    public String getAboutme() {
+        return aboutme;
     }
 }
