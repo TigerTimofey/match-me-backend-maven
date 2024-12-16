@@ -37,12 +37,14 @@ public class User {
 
     private String aboutme;
 
+    private String lookingFor;
+
     // Default Constructor
     public User() {
     }
 
     // Full Constructor
-    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image, String aboutme) {
+    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image, String aboutme, String lookingFor) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -55,6 +57,7 @@ public class User {
         this.hobbies = hobbies;
         this.image = image;
         this.aboutme = aboutme;
+        this.lookingFor = lookingFor;
     }
 
     // Getters and Setters
@@ -141,7 +144,17 @@ public class User {
     public String getImage() {
         return image;
     }
+    public void setImage(String image) {
+        this.image = image;
+    }
+
     public String getAboutme() {
         return aboutme;
     }
+    public void setAboutme(String aboutme) {
+        this.aboutme = aboutme;
+    }
+
+    public String getLookingFor() { return lookingFor; }
+    public void setLookingFor(String lookingFor) { this.lookingFor = lookingFor;}
 }

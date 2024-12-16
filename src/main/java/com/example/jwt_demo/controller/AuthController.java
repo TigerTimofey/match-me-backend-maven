@@ -61,7 +61,8 @@ public class AuthController {
                 user.getLanguages(),
                 user.getHobbies(),
                 user.getImage(),
-                user.getAboutme()
+                user.getAboutme(),
+                user.getLookingFor()
         );
         userRepository.save(newUser);
         return "User registered successfully!";
@@ -82,7 +83,62 @@ public class AuthController {
         }
     }
 
-//    /users/{id}: which returns the user's name and link to the profile picture.
+    @PatchMapping("/users/{id}")
+    public User updateUserById(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        // Find the user by ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Apply updates
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "username":
+                    user.setUsername((String) value);
+                    break;
+                case "password":
+                    user.setPassword(encoder.encode((String) value));
+                    break;
+                case "name":
+                    user.setName((String) value);
+                    break;
+                case "lastname":
+                    user.setLastname((String) value);
+                    break;
+                case "city":
+                    user.setCity((String) value);
+                    break;
+                case "age":
+                    user.setAge((Integer) value);
+                    break;
+                case "gender":
+                    user.setGender((String) value);
+                    break;
+                case "languages":
+                    user.setLanguages((List<String>) value);
+                    break;
+                case "hobbies":
+                    user.setHobbies((List<String>) value);
+                    break;
+                case "image":
+                    user.setImage((String) value);
+                    break;
+                case "aboutme":
+                    user.setAboutme((String) value);
+                    break;
+                case "lookingFor":
+                    user.setLookingFor((String) value);
+                    break;
+                default:
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid field: " + key);
+            }
+        });
+
+        // Save the updated user
+        return userRepository.save(user);
+    }
+
+
+    //    /users/{id}: which returns the user's name and link to the profile picture.
 //      /me: which is a shortcut to /users/{id}
     @GetMapping("/users/{id}")
     public Map<String, Object> getUserById(@PathVariable Long id) {
@@ -170,7 +226,7 @@ public Map<String, Object> getMyProfile() {
             User user = userRepository.findByUsername(username);
 
             if (user == null) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Пользователь не найден");
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No user");
             }
 
             Map<String, Object> response = new HashMap<>();
@@ -184,7 +240,7 @@ public Map<String, Object> getMyProfile() {
             return response;
         }
 
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Hеавторизован - неверный или отсутствующий Bearer-токен");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized user - invalid or missing Bearer token");
     }
 
 

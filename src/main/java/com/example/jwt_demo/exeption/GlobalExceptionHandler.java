@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
         } else if (ex.getMessage().contains("400")) {
             status = HttpStatus.BAD_REQUEST;
         } else if (ex.getMessage().contains("401")) {
-            status = HttpStatus.UNAUTHORIZED; // Handling unauthorized access specifically
+            status = HttpStatus.UNAUTHORIZED;
         }
 
         errorDetails.put("status", status.value());
