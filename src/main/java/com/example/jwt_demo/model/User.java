@@ -39,12 +39,14 @@ public class User {
 
     private String lookingFor;
 
+    private Boolean isBioProvided;
+
     // Default Constructor
     public User() {
     }
 
     // Full Constructor
-    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image, String aboutme, String lookingFor) {
+    public User(Long id, String username, String password, String name, String lastname, String city, Integer age, String gender, List<String> languages, List<String> hobbies, String image, String aboutme, String lookingFor, Boolean isBioProvided) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -58,6 +60,7 @@ public class User {
         this.image = image;
         this.aboutme = aboutme;
         this.lookingFor = lookingFor;
+        this.isBioProvided = false;
     }
 
     // Getters and Setters
@@ -156,5 +159,10 @@ public class User {
     }
 
     public String getLookingFor() { return lookingFor; }
+
     public void setLookingFor(String lookingFor) { this.lookingFor = lookingFor;}
+
+    public Boolean getBioProvided() {return isBioProvided;}
+
+    public void setBioProvided(Boolean isBioProvided) {this.isBioProvided = isBioProvided;}
 }

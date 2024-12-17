@@ -62,7 +62,8 @@ public class AuthController {
                 user.getHobbies(),
                 user.getImage(),
                 user.getAboutme(),
-                user.getLookingFor()
+                user.getLookingFor(),
+                user.getBioProvided()
         );
         userRepository.save(newUser);
         return "User registered successfully!";
@@ -127,6 +128,9 @@ public class AuthController {
                     break;
                 case "lookingFor":
                     user.setLookingFor((String) value);
+                    break;
+                case "isBioProvided":
+                    user.setBioProvided((Boolean) value);
                     break;
                 default:
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid field: " + key);
