@@ -195,6 +195,7 @@ public Map<String, Object> getMyProfile() {
         response.put("lastname", user.getLastname());
         response.put("languages", user.getLanguages());
         response.put("aboutme", user.getAboutme());
+        response.put("lookingFor", user.getLookingFor());
 
         return response;
     }
