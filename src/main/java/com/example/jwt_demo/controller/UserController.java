@@ -76,9 +76,22 @@ public class UserController {
         return null;
     }
 
+    @GetMapping("/me/profile")
+    public UserProfileDTO getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+            User user = userRepository.findByUsername(username);
+            return userMapper.toProfileDTO(user);
+        }
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
+    }
+
+    // For /users/{id}/profile
     @GetMapping("/{id}/profile")
-    public UserProfileDTO getUserProfile(@PathVariable Long id) {
-        User user = userProfileService.getCurrentUser();
+    public UserProfileDTO getUserProfileById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return userMapper.toProfileDTO(user);
     }
 
@@ -121,6 +134,7 @@ public class UserController {
             return response;
         }
 
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized user - invalid or missing Bearer token");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                "Unauthorized user - invalid or missing Bearer token");
     }
-} 
+}

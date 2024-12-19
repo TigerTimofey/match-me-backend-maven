@@ -40,8 +40,7 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUsername(),
-                        user.getPassword())
-        );
+                        user.getPassword()));
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return jwtUtils.generateToken(userDetails.getUsername());
     }
@@ -65,8 +64,7 @@ public class AuthController {
                 user.getImage(),
                 user.getAboutme(),
                 user.getLookingFor(),
-                user.getBioProvided()
-        );
+                user.getBioProvided(), null);
         userRepository.save(newUser);
         return "User registered successfully!";
     }

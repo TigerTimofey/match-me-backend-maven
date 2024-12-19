@@ -1,14 +1,17 @@
 package com.example.jwt_demo.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.jwt_demo.dto.UserProfileDTO;
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
@@ -19,6 +22,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserProfileService {
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -47,11 +53,83 @@ public class UserProfileService {
 
     private UserProfileDTO convertToProfileDTO(User user) {
         UserProfileDTO dto = new UserProfileDTO();
-        // Заполнить DTO данными из user
+        // Populate DTO with user data
         return dto;
     }
 
+    @SuppressWarnings("unchecked")
     private void applyUpdates(User user, Map<String, Object> updates) {
-        // Логика обновления полей пользователя
+        updates.forEach((key, value) -> {
+            try {
+                switch (key) {
+                    case "username":
+                        user.setUsername((String) value);
+                        break;
+                    case "password":
+                        user.setPassword(encoder.encode((String) value));
+                        break;
+                    case "name":
+                        user.setName((String) value);
+                        break;
+                    case "lastname":
+                        user.setLastname((String) value);
+                        break;
+                    case "city":
+                        user.setCity((String) value);
+                        break;
+                    case "age":
+                        if (value instanceof Integer) {
+                            user.setAge((Integer) value);
+                        } else {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid type for age field");
+                        }
+                        break;
+                    case "gender":
+                        if (value instanceof String) {
+                            user.setGender((String) value);
+                        } else {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid type for gender field");
+                        }
+                        break;
+                    case "languages":
+                        if (value instanceof List) {
+                            user.setLanguages((List<String>) value);
+                        } else {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                    "Invalid type for languages field");
+                        }
+                        break;
+                    case "hobbies":
+                        if (value instanceof List) {
+                            user.setHobbies((List<String>) value);
+                        } else {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid type for hobbies field");
+                        }
+                        break;
+                    case "image":
+                        user.setImage((String) value);
+                        break;
+                    case "aboutme":
+                        user.setAboutme((String) value);
+                        break;
+                    case "lookingFor":
+                        user.setLookingFor((String) value);
+                        break;
+                    case "isBioProvided":
+                        if (value instanceof Boolean) {
+                            user.setBioProvided((Boolean) value);
+                        } else {
+                            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                    "Invalid type for isBioProvided field");
+                        }
+                        break;
+                    default:
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid field: " + key);
+                }
+            } catch (ClassCastException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid type for " + key + " field");
+            }
+        });
     }
+
 }

@@ -53,24 +53,4 @@ public class User {
     public void setBioProvided(Boolean bioProvided) {
         this.bioProvided = bioProvided;
     }
-
-    public User(Long id, String username, String password, String name, String lastname, 
-                String city, Integer age, String gender, List<String> languages, 
-                List<String> hobbies, String image, String aboutme, String lookingFor, 
-                Boolean bioProvided) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.lastname = lastname;
-        this.city = city;
-        this.age = age;
-        this.gender = gender;
-        this.languages = languages;
-        this.hobbies = hobbies;
-        this.image = image;
-        this.aboutme = aboutme;
-        this.lookingFor = lookingFor;
-        this.bioProvided = bioProvided;
-    }
 }
