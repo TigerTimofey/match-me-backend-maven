@@ -40,9 +40,38 @@ public class UserProfileService {
         return convertToProfileDTO(user);
     }
 
+    @SuppressWarnings("unchecked")
     public User updateUser(Long id, Map<String, Object> updates) {
-        User user = findUserById(id);
-        applyUpdates(user, updates);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Обновляем поля в зависимости от того, что передано в updates
+        if (updates.containsKey("city")) {
+            user.setCity((String) updates.get("city"));
+        }
+        if (updates.containsKey("age")) {
+            user.setAge((Integer) updates.get("age"));
+        }
+        if (updates.containsKey("gender")) {
+            user.setGender((String) updates.get("gender"));
+        }
+        if (updates.containsKey("image")) {
+            user.setImage((byte[]) updates.get("image")); // Используем byte[] для обновления изображения
+        }
+        if (updates.containsKey("languages")) {
+            user.setLanguages((List<String>) updates.get("languages"));
+        }
+        if (updates.containsKey("hobbies")) {
+            user.setHobbies((List<String>) updates.get("hobbies"));
+        }
+        if (updates.containsKey("aboutme")) {
+            user.setAboutme((String) updates.get("aboutme"));
+        }
+        if (updates.containsKey("lookingFor")) {
+            user.setLookingFor((String) updates.get("lookingFor"));
+        }
+
+        // Сохраняем изменения в базе данных
         return userRepository.save(user);
     }
 
@@ -107,8 +136,9 @@ public class UserProfileService {
                         }
                         break;
                     case "image":
-                        user.setImage((String) value);
+                        user.setImage((byte[]) value);
                         break;
+
                     case "aboutme":
                         user.setAboutme((String) value);
                         break;

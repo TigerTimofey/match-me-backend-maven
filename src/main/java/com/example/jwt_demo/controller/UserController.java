@@ -1,5 +1,6 @@
 package com.example.jwt_demo.controller;
 
+import java.sql.Blob;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +15,14 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.multipart.MultipartFile;
+import java.util.Map;
 
 import com.example.jwt_demo.dto.UserProfileDTO;
 import com.example.jwt_demo.mapper.UserMapper;
@@ -24,6 +31,11 @@ import com.example.jwt_demo.repository.UserRepository;
 import com.example.jwt_demo.service.UserProfileService;
 
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -50,8 +62,29 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public User updateUserById(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        return userProfileService.updateUser(id, updates);
+    public User updateUserById(
+            @PathVariable Long id,
+            @RequestParam("data") String userBioData,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+
+        try {
+            // Deserialize JSON data to Map<String, Object>
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> updates = objectMapper.readValue(userBioData, new TypeReference<Map<String, Object>>() {
+            });
+
+            // Handle image if provided
+            if (image != null && !image.isEmpty()) {
+                byte[] imageBytes = image.getBytes();
+                updates.put("image", imageBytes);
+            }
+
+            // Update user profile
+            return userProfileService.updateUser(id, updates);
+
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input data", e);
+        }
     }
 
     @GetMapping("/{id}")

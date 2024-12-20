@@ -13,7 +13,7 @@ public class UserProfileDTO {
     private String gender;
     private List<String> languages;
     private List<String> hobbies;
-    private String image;
+    private byte[] image;
     private String aboutme;
     private String lookingFor;
 }

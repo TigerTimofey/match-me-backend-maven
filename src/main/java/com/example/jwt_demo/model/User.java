@@ -40,7 +40,8 @@ public class User {
     @ElementCollection
     private List<String> hobbies = new ArrayList<>();
 
-    private String image;
+    @Column(columnDefinition = "BYTEA")
+    private byte[] image;
     private String aboutme;
     private String lookingFor;
     private Boolean isBioProvided = false;
