@@ -148,7 +148,7 @@ public class UserProfileService {
                     case "lookingFor":
                         user.setLookingFor((String) value);
                         break;
-                    case "isBioProvided":
+                    case "bioProvided":
                         if (value instanceof Boolean) {
                             user.setBioProvided((Boolean) value);
                         } else {
