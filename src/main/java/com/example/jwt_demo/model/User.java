@@ -45,7 +45,7 @@ public class User {
     private String aboutme;
     private String lookingFor;
     private Boolean isBioProvided = false;
-    private Boolean bioProvided;
+    private Boolean bioProvided = false;
 
     public Boolean getBioProvided() {
         return bioProvided;

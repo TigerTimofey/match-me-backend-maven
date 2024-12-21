@@ -73,11 +73,21 @@ public class UserController {
             Map<String, Object> updates = objectMapper.readValue(userBioData, new TypeReference<Map<String, Object>>() {
             });
 
+            // Handle image updates
+
             // Handle image if provided
             if (image != null && !image.isEmpty()) {
                 byte[] imageBytes = image.getBytes();
                 updates.put("image", imageBytes);
             }
+
+            // remove
+            // if (image != null && !image.isEmpty()) {
+            // byte[] imageBytes = image.getBytes();
+            // updates.put("image", imageBytes); // Add or update image
+            // } else if (!updates.containsKey("image")) {
+            // updates.put("image", null); // Remove image explicitly if not present
+            // }
 
             // Update user profile
             return userProfileService.updateUser(id, updates);

@@ -70,6 +70,9 @@ public class UserProfileService {
         if (updates.containsKey("lookingFor")) {
             user.setLookingFor((String) updates.get("lookingFor"));
         }
+        if (updates.containsKey("bioProvided")) { // Add this check
+            user.setBioProvided((Boolean) updates.get("bioProvided"));
+        }
 
         // Сохраняем изменения в базе данных
         return userRepository.save(user);
