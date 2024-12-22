@@ -143,6 +143,7 @@ public class UserController {
         response.put("age", user.getAge());
         response.put("genres", user.getGender());
         response.put("hobbies", user.getHobbies());
+        response.put("languages", user.getLanguages());
 
         return response;
     }
@@ -166,6 +167,7 @@ public class UserController {
             response.put("age", user.getAge());
             response.put("gender", user.getGender());
             response.put("hobbies", user.getHobbies());
+            response.put("languages", user.getLanguages());
 
             return response;
         }
