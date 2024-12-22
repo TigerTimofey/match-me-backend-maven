@@ -68,34 +68,59 @@ public class UserController {
             @RequestParam(value = "image", required = false) MultipartFile image) {
 
         try {
-            // Deserialize JSON data to Map<String, Object>
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> updates = objectMapper.readValue(userBioData, new TypeReference<Map<String, Object>>() {
             });
 
-            // Handle image updates
-
-            // Handle image if provided
-            if (image != null && !image.isEmpty()) {
+            if (image != null && !image.isEmpty() && !updates.containsKey("image")) {
                 byte[] imageBytes = image.getBytes();
                 updates.put("image", imageBytes);
             }
 
-            // remove
-            // if (image != null && !image.isEmpty()) {
-            // byte[] imageBytes = image.getBytes();
-            // updates.put("image", imageBytes); // Add or update image
-            // } else if (!updates.containsKey("image")) {
-            // updates.put("image", null); // Remove image explicitly if not present
-            // }
+            // Если новые name или lastname приходят из фронта, обновляем их
+            User currentUser = userProfileService.getCurrentUser();
+            if (updates.containsKey("name")) {
+                currentUser.setName((String) updates.get("name"));
+            } else {
+                updates.put("name", currentUser.getName());
+            }
+            if (updates.containsKey("lastname")) {
+                currentUser.setLastname((String) updates.get("lastname"));
+            } else {
+                updates.put("lastname", currentUser.getLastname());
+            }
 
-            // Update user profile
             return userProfileService.updateUser(id, updates);
 
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input data", e);
         }
     }
+
+    // @PatchMapping("/{id}")
+    // public User updateUserById(
+    // @PathVariable Long id,
+    // @RequestParam("data") String userBioData,
+    // @RequestParam(value = "image", required = false) MultipartFile image) {
+
+    // try {
+
+    // ObjectMapper objectMapper = new ObjectMapper();
+    // Map<String, Object> updates = objectMapper.readValue(userBioData, new
+    // TypeReference<Map<String, Object>>() {
+    // });
+
+    // if (image != null && !image.isEmpty()) {
+    // byte[] imageBytes = image.getBytes();
+    // updates.put("image", imageBytes);
+    // }
+    // return userProfileService.updateUser(id, updates);
+
+    // } catch (Exception e) {
+    // throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input
+    // data", e);
+    // }
+    // }
 
     @GetMapping("/{id}")
     public Map<String, Object> getUserById(@PathVariable Long id) {
