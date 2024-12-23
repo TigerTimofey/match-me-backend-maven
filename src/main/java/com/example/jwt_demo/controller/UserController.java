@@ -65,12 +65,20 @@ public class UserController {
             Map<String, Object> updates = objectMapper.readValue(userBioData, new TypeReference<Map<String, Object>>() {
             });
 
+            // IMPORTANT DO NOT REMOVE IMPORTANT DO NOT REMOVE IMPORTANT DO NOT REMOVE
+            // IMPORTANT DO NOT REMOVE
             if (image != null && !image.isEmpty() && !updates.containsKey("image")) {
                 byte[] imageBytes = image.getBytes();
                 updates.put("image", imageBytes);
             }
 
-            // Если новые name или lastname приходят из фронта, обновляем их
+            // if (image != null && !image.isEmpty() && !updates.containsKey("image")) {
+            // byte[] imageBytes = image.getBytes();
+            // updates.put("image", imageBytes);
+            // } else if (image == null) { // Обработка null для удаления изображения
+            // updates.put("image", null);
+            // }
+
             User currentUser = userProfileService.getCurrentUser();
             if (updates.containsKey("name")) {
                 currentUser.setName((String) updates.get("name"));
