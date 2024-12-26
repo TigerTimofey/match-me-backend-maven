@@ -136,6 +136,7 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
         Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
         response.put("name", user.getName());
         response.put("lastname", user.getLastname());
         response.put("city", user.getCity());
@@ -160,6 +161,7 @@ public class UserController {
             }
 
             Map<String, Object> response = new HashMap<>();
+            response.put("id", user.getId());
             response.put("name", user.getName());
             response.put("lastname", user.getLastname());
             response.put("city", user.getCity());
