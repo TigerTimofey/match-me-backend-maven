@@ -7,7 +7,7 @@ import com.example.jwt_demo.model.User;
 
 @Component
 public class UserMapper {
-    
+
     // Преобразование User в UserProfileDTO
     public UserProfileDTO toProfileDTO(User user) {
         UserProfileDTO dto = new UserProfileDTO();
@@ -18,6 +18,7 @@ public class UserMapper {
         dto.setGender(user.getGender());
         dto.setLanguages(user.getLanguages());
         dto.setHobbies(user.getHobbies());
+        dto.setDismissed(user.getDismissed());
         dto.setImage(user.getImage());
         dto.setAboutme(user.getAboutme());
         dto.setLookingFor(user.getLookingFor());
@@ -33,6 +34,7 @@ public class UserMapper {
         user.setGender(dto.getGender());
         user.setLanguages(dto.getLanguages());
         user.setHobbies(dto.getHobbies());
+        dto.setDismissed(user.getDismissed());
         user.setImage(dto.getImage());
         user.setAboutme(dto.getAboutme());
         user.setLookingFor(dto.getLookingFor());

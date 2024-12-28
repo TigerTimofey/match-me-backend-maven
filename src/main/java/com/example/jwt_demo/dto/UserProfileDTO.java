@@ -1,5 +1,6 @@
 package com.example.jwt_demo.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -13,6 +14,7 @@ public class UserProfileDTO {
     private String gender;
     private List<String> languages;
     private List<String> hobbies;
+    private List<Integer> dismissed;
     private byte[] image;
     private String aboutme;
     private String lookingFor;

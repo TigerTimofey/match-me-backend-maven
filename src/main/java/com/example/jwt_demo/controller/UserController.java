@@ -187,4 +187,18 @@ public class UserController {
                 .toList();
     }
 
+    //
+    @GetMapping("/{id}/dismissed")
+    public Map<String, Object> getBasicUserDetails(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Prepare response map with id, name, and dismissed list
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("dismissed", user.getDismissed());
+
+        return response;
+    }
 }

@@ -58,6 +58,9 @@ public class UserProfileService {
         if (updates.containsKey("hobbies")) {
             user.setHobbies((List<String>) updates.get("hobbies"));
         }
+        if (updates.containsKey("dismissed")) {
+            user.setDismissed((List<Integer>) updates.get("dismissed"));
+        }
         if (updates.containsKey("aboutme")) {
             user.setAboutme((String) updates.get("aboutme"));
         }
