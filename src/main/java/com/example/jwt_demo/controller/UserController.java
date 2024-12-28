@@ -183,7 +183,7 @@ public class UserController {
         return userRepository.findAll()
                 .stream()
                 .map(User::getId)
-                .limit(10)
+                .limit(11)
                 .toList();
     }
 
