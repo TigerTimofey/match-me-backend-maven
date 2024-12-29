@@ -44,7 +44,10 @@ public class User {
     private List<Integer> dismissed = new ArrayList<>();
 
     @ElementCollection
-    private List<Integer> matchRequests = new ArrayList<>();
+    private List<Integer> outcomeRequests = new ArrayList<>();
+
+    @ElementCollection
+    private List<Integer> incomeRequests = new ArrayList<>();
 
     @Column(columnDefinition = "BYTEA")
     private byte[] image;

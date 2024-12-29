@@ -178,6 +178,7 @@ public class UserController {
                 "Unauthorized user - invalid or missing Bearer token");
     }
 
+    // CONNECTIONS
     // recommedations
     @GetMapping("/recommendations")
     public List<Long> getRecommendations() {
@@ -219,9 +220,9 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    // add match requests
-    @GetMapping("/{id}/match-requests")
-    public Map<String, Object> getMatchReq(@PathVariable Long id) {
+    // add outcome requests
+    @GetMapping("/{id}/outcome-requests")
+    public Map<String, Object> getOutcomeReq(@PathVariable Long id) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
@@ -229,24 +230,52 @@ public class UserController {
         // Prepare response map with id, name, and dismissed list
         Map<String, Object> response = new HashMap<>();
         response.put("id", user.getId());
-        response.put("matchRequests", user.getMatchRequests());
+        response.put("outcomeRequests", user.getOutcomeRequests());
 
         return response;
     }
 
-    // patch match requests
-    @PatchMapping("/{id}/match-requests")
-    public ResponseEntity<User> updateMatchReq(
+    // patch outcome requests
+    @PatchMapping("/{id}/outcome-requests")
+    public ResponseEntity<User> updateOutcomeReq(
             @PathVariable Long id,
-            @RequestBody List<Integer> newMatchTReq) {
+            @RequestBody List<Integer> newOutcomeReq) {
 
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        user.setMatchRequests(newMatchTReq);
+        user.setOutcomeRequests(newOutcomeReq);
         userRepository.save(user);
 
         return ResponseEntity.ok(user);
     }
 
+    // add income requests
+    @GetMapping("/{id}/income-requests")
+    public Map<String, Object> getIncomeReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("incomeRequests", user.getIncomeRequests());
+
+        return response;
+    }
+
+    // patch Income requests
+    @PatchMapping("/{id}/income-requests")
+    public ResponseEntity<User> updateIncomeReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newIncomeReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setIncomeRequests(newIncomeReq);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
 }

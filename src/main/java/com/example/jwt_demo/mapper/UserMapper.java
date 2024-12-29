@@ -19,7 +19,8 @@ public class UserMapper {
         dto.setLanguages(user.getLanguages());
         dto.setHobbies(user.getHobbies());
         dto.setDismissed(user.getDismissed());
-        dto.setMatchRequests(user.getMatchRequests());
+        dto.setOutcomeRequests(user.getOutcomeRequests());
+        dto.setIncomeRequests(user.getIncomeRequests());
         dto.setImage(user.getImage());
         dto.setAboutme(user.getAboutme());
         dto.setLookingFor(user.getLookingFor());
@@ -36,7 +37,8 @@ public class UserMapper {
         user.setLanguages(dto.getLanguages());
         user.setHobbies(dto.getHobbies());
         user.setDismissed(dto.getDismissed());
-        user.setMatchRequests(dto.getMatchRequests());
+        user.setOutcomeRequests(dto.getOutcomeRequests());
+        user.setIncomeRequests(dto.getIncomeRequests());
         user.setImage(dto.getImage());
         user.setAboutme(dto.getAboutme());
         user.setLookingFor(dto.getLookingFor());
