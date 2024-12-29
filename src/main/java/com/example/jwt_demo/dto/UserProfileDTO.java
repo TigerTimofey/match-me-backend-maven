@@ -15,6 +15,7 @@ public class UserProfileDTO {
     private List<String> languages;
     private List<String> hobbies;
     private List<Integer> dismissed;
+    private List<Integer> matchRequests;
     private byte[] image;
     private String aboutme;
     private String lookingFor;

@@ -62,6 +62,7 @@ public class AuthController {
                 user.getLanguages(),
                 user.getHobbies(),
                 user.getDismissed(),
+                user.getMatchRequests(),
                 user.getImage(),
                 user.getAboutme(),
                 user.getLookingFor(),

@@ -61,6 +61,9 @@ public class UserProfileService {
         if (updates.containsKey("dismissed")) {
             user.setDismissed((List<Integer>) updates.get("dismissed"));
         }
+        if (updates.containsKey("matchRequests")) {
+            user.setMatchRequests((List<Integer>) updates.get("matchRequests"));
+        }
         if (updates.containsKey("aboutme")) {
             user.setAboutme((String) updates.get("aboutme"));
         }

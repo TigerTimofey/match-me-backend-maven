@@ -219,4 +219,34 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
+    // add match requests
+    @GetMapping("/{id}/match-requests")
+    public Map<String, Object> getMatchReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Prepare response map with id, name, and dismissed list
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("matchRequests", user.getMatchRequests());
+
+        return response;
+    }
+
+    // patch match requests
+    @PatchMapping("/{id}/match-requests")
+    public ResponseEntity<User> updateMatchReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newMatchTReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setMatchRequests(newMatchTReq);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
+
 }
