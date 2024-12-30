@@ -278,4 +278,33 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
+    // add connections requests
+    @GetMapping("/{id}/connections")
+    public Map<String, Object> getConnectionsReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("connections", user.getConnections());
+
+        return response;
+    }
+
+    // patch connections requests
+    @PatchMapping("/{id}/connections")
+    public ResponseEntity<User> updateConnectionsReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newConnectionsReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setIncomeRequests(newConnectionsReq);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
 }

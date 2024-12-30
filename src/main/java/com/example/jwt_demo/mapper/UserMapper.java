@@ -21,6 +21,7 @@ public class UserMapper {
         dto.setDismissed(user.getDismissed());
         dto.setOutcomeRequests(user.getOutcomeRequests());
         dto.setIncomeRequests(user.getIncomeRequests());
+        dto.setConnections(user.getConnections());
         dto.setImage(user.getImage());
         dto.setAboutme(user.getAboutme());
         dto.setLookingFor(user.getLookingFor());
@@ -39,6 +40,7 @@ public class UserMapper {
         user.setDismissed(dto.getDismissed());
         user.setOutcomeRequests(dto.getOutcomeRequests());
         user.setIncomeRequests(dto.getIncomeRequests());
+        user.setConnections(dto.getConnections());
         user.setImage(dto.getImage());
         user.setAboutme(dto.getAboutme());
         user.setLookingFor(dto.getLookingFor());

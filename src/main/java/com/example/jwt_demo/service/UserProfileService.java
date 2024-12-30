@@ -67,6 +67,9 @@ public class UserProfileService {
         if (updates.containsKey("incomeRequests")) {
             user.setIncomeRequests((List<Integer>) updates.get("incomeRequests"));
         }
+        if (updates.containsKey("connections")) {
+            user.setConnections((List<Integer>) updates.get("connections"));
+        }
         if (updates.containsKey("aboutme")) {
             user.setAboutme((String) updates.get("aboutme"));
         }

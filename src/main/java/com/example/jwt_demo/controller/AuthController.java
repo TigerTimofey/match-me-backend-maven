@@ -64,6 +64,7 @@ public class AuthController {
                 user.getDismissed(),
                 user.getOutcomeRequests(),
                 user.getIncomeRequests(),
+                user.getConnections(),
                 user.getImage(),
                 user.getAboutme(),
                 user.getLookingFor(),

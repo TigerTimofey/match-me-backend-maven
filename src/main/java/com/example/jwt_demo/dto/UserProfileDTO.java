@@ -17,6 +17,7 @@ public class UserProfileDTO {
     private List<Integer> dismissed;
     private List<Integer> outcomeRequests;
     private List<Integer> incomeRequests;
+    private List<Integer> connections;
     private byte[] image;
     private String aboutme;
     private String lookingFor;
