@@ -3,6 +3,7 @@ package com.example.jwt_demo.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -180,13 +181,23 @@ public class UserController {
 
     // CONNECTIONS
     // recommedations
+    // @GetMapping("/recommendations")
+    // public List<Long> getRecommendations() {
+    // return userRepository.findAll()
+    // .stream()
+    // .map(User::getId)
+    // .limit(11)
+    // .toList();
+    // }
     @GetMapping("/recommendations")
     public List<Long> getRecommendations() {
-        return userRepository.findAll()
+        List<Long> allUsers = userRepository.findAll()
                 .stream()
                 .map(User::getId)
-                .limit(11)
-                .toList();
+                .collect(Collectors.toList());
+
+        // Показываем только 10 пользователям
+        return allUsers.stream().limit(100).toList();
     }
 
     // add dismissed
@@ -302,7 +313,8 @@ public class UserController {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
-        user.setIncomeRequests(newConnectionsReq);
+        user.setConnections(newConnectionsReq);
+
         userRepository.save(user);
 
         return ResponseEntity.ok(user);
