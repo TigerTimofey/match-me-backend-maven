@@ -40,6 +40,18 @@ public class User {
     @ElementCollection
     private List<String> hobbies = new ArrayList<>();
 
+    @ElementCollection
+    private List<Integer> dismissed = new ArrayList<>();
+
+    @ElementCollection
+    private List<Integer> outcomeRequests = new ArrayList<>();
+
+    @ElementCollection
+    private List<Integer> incomeRequests = new ArrayList<>();
+
+    @ElementCollection
+    private List<Integer> connections = new ArrayList<>();
+
     @Column(columnDefinition = "BYTEA")
     private byte[] image;
     private String aboutme;

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -245,6 +247,7 @@ public class UserController {
         }
     }
 
+
     // Get user bio by ID
     @GetMapping("/{id}/bio")
     public Map<String, Object> getUserBioById(@PathVariable Long id) {
@@ -263,20 +266,151 @@ public class UserController {
 
         return response;
     }
+    // CONNECTIONS
+    // recommedations
+    // @GetMapping("/recommendations")
+    // public List<Long> getRecommendations() {
+    // return userRepository.findAll()
+    // .stream()
+    // .map(User::getId)
+    // .limit(11)
+    // .toList();
+    // }
 
-    // Get user recommendations
     @GetMapping("/recommendations")
     public List<Long> getRecommendations() {
-        return userRepository.findAll()
+        List<Long> allUsers = userRepository.findAll()
                 .stream()
                 .map(User::getId)
-                .limit(11)
-                .toList();
+                .collect(Collectors.toList());
+
+        // Показываем только 10 пользователям
+        return allUsers.stream().limit(100).toList();
     }
+
+    // add dismissed
+    @GetMapping("/{id}/dismissed")
+    public Map<String, Object> getBasicUserDetails(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Prepare response map with id, name, and dismissed list
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("dismissed", user.getDismissed());
+
+        return response;
+    }
+
+    // patch dismissed
+    @PatchMapping("/{id}/dismissed")
+    public ResponseEntity<User> updateDismissedUsers(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newDismissed) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Update the 'dismissed' list with the new values
+        user.setDismissed(newDismissed);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
+
+    // add outcome requests
+    @GetMapping("/{id}/outcome-requests")
+    public Map<String, Object> getOutcomeReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        // Prepare response map with id, name, and dismissed list
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("outcomeRequests", user.getOutcomeRequests());
+
+        return response;
+    }
+
+    // patch outcome requests
+    @PatchMapping("/{id}/outcome-requests")
+    public ResponseEntity<User> updateOutcomeReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newOutcomeReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setOutcomeRequests(newOutcomeReq);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
+
+    // add income requests
+    @GetMapping("/{id}/income-requests")
+    public Map<String, Object> getIncomeReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("incomeRequests", user.getIncomeRequests());
+
+        return response;
+    }
+
+    // patch Income requests
+    @PatchMapping("/{id}/income-requests")
+    public ResponseEntity<User> updateIncomeReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newIncomeReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setIncomeRequests(newIncomeReq);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
+    }
+
 
     // Helper method to check if current user can access target user's profile
     private boolean canAccessUserProfile(User targetUser) {
         User currentUser = userProfileService.getCurrentUser();
         return true; // Пока возвращаем true
+
+    // add connections requests
+    @GetMapping("/{id}/connections")
+    public Map<String, Object> getConnectionsReq(@PathVariable Long id) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("connections", user.getConnections());
+
+        return response;
+    }
+
+    // patch connections requests
+    @PatchMapping("/{id}/connections")
+    public ResponseEntity<User> updateConnectionsReq(
+            @PathVariable Long id,
+            @RequestBody List<Integer> newConnectionsReq) {
+
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        user.setConnections(newConnectionsReq);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(user);
     }
 }
