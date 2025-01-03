@@ -58,6 +58,18 @@ public class UserProfileService {
         if (updates.containsKey("hobbies")) {
             user.setHobbies((List<String>) updates.get("hobbies"));
         }
+        if (updates.containsKey("dismissed")) {
+            user.setDismissed((List<Integer>) updates.get("dismissed"));
+        }
+        if (updates.containsKey("outcomeRequests")) {
+            user.setOutcomeRequests((List<Integer>) updates.get("outcomeRequests"));
+        }
+        if (updates.containsKey("incomeRequests")) {
+            user.setIncomeRequests((List<Integer>) updates.get("incomeRequests"));
+        }
+        if (updates.containsKey("connections")) {
+            user.setConnections((List<Integer>) updates.get("connections"));
+        }
         if (updates.containsKey("aboutme")) {
             user.setAboutme((String) updates.get("aboutme"));
         }
