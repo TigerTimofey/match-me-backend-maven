@@ -1,7 +1,10 @@
 package com.example.jwt_demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,6 +74,40 @@ public class AuthController {
                 user.getBioProvided(), null);
         userRepository.save(newUser);
         return "User registered successfully!";
+    }
+
+    @PostMapping("/signup/batch")
+    public ResponseEntity<String> registerBatchUsers(@RequestBody List<User> users) {
+        int successCount = 0;
+        for (User user : users) {
+            try {
+                if (!userRepository.existsByUsername(user.getUsername())) {
+                    User newUser = new User(
+                        null,
+                        user.getUsername(),
+                        encoder.encode(user.getPassword()),
+                        user.getName(),
+                        user.getLastname(),
+                        user.getCity(),
+                        user.getAge(),
+                        user.getGender(),
+                        user.getLanguages(),
+                        user.getHobbies(),
+                        user.getImage(),
+                        user.getAboutme(),
+                        user.getLookingFor(),
+                        user.getBioProvided(),
+                        null
+                    );
+                    userRepository.save(newUser);
+                    successCount++;
+                }
+            } catch (Exception e) {
+                // Пропускаем неудачные попытки
+                continue;
+            }
+        }
+        return ResponseEntity.ok("Successfully registered " + successCount + " users out of " + users.size());
     }
 
     @GetMapping("/me")
