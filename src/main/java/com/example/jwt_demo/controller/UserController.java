@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
@@ -62,7 +63,30 @@ public class UserController {
     @GetMapping("/generate")
     public ResponseEntity<String> generateTestUsers(@RequestParam(defaultValue = "100") int count) {
         List<User> users = new ArrayList<>();
-        List<String> cities = Arrays.asList("Tallinn", "Tartu", "Narva", "Loksa");
+        // Только 4 города
+        List<String> cities = Arrays.asList("Tallinn", "Tartu", "Narva", "Pärnu");
+        
+        // Только 5 хобби в каждой категории
+        List<String> allHobbies = Arrays.asList(
+            // Спорт (5)
+            "Swimming", "Yoga", "Running", "Football", "Tennis",
+            
+            // Искусство (5)
+            "Painting", "Photography", "Drawing", "Music", "Dancing",
+            
+            // Технологии (5)
+            "Programming", "Gaming", "Web Design", "3D Modeling", "Robotics",
+            
+            // Социальные активности (5)
+            "Language Exchange", "Volunteering", "Teaching", "Event Planning", "Networking"
+        );
+        
+        // Только 5 основных языков
+        List<String> allLanguages = Arrays.asList(
+            "Estonian", "English", "Russian", "Finnish", "German"
+        );
+        
+        Random random = new Random();
         
         for (int i = 0; i < count; i++) {
             try {
@@ -74,17 +98,49 @@ public class UserController {
                     continue;
                 }
                 
+                // Базовая информация
                 user.setUsername(email);
                 user.setPassword(encoder.encode("password"));
                 user.setName("Test User " + i);
                 user.setLastname("Lastname " + i);
                 user.setCity(cities.get(i % cities.size()));
-                user.setAge(20 + (i % 30));
+                user.setAge(20 + (i % 15)); // Возраст от 20 до 34
                 user.setGender(i % 2 == 0 ? "Male" : "Female");
-                user.setLanguages(Arrays.asList("English", "Russian"));
-                user.setHobbies(Arrays.asList("Reading", "Sports"));
-                user.setAboutme("About user " + i);
-                user.setLookingFor("Looking for friends");
+                
+                // 2-3 хобби из каждой категории
+                int hobbiesCount = random.nextInt(2) + 2; // 2-3 хобби
+                List<String> userHobbies = new ArrayList<>();
+                while (userHobbies.size() < hobbiesCount) {
+                    String hobby = allHobbies.get(random.nextInt(allHobbies.size()));
+                    if (!userHobbies.contains(hobby)) {
+                        userHobbies.add(hobby);
+                    }
+                }
+                user.setHobbies(userHobbies);
+                
+                // 2-3 языка
+                int languagesCount = random.nextInt(2) + 2; // 2-3 языка
+                List<String> userLanguages = new ArrayList<>();
+                // Всегда добавляем Estonian и English
+                userLanguages.add("Estonian");
+                userLanguages.add("English");
+                // Добавляем еще один случайный язык, если нужно
+                if (languagesCount > 2) {
+                    String additionalLanguage = allLanguages.get(random.nextInt(3) + 2); // Выбираем из Russian, Finnish, German
+                    if (!userLanguages.contains(additionalLanguage)) {
+                        userLanguages.add(additionalLanguage);
+                    }
+                }
+                user.setLanguages(userLanguages);
+                
+                // Генерация "about me" с упоминанием хобби и языков
+                String aboutMe = String.format("Hi! I'm interested in %s. I speak %s. %s",
+                    String.join(" and ", userHobbies),
+                    String.join(" and ", userLanguages),
+                    i % 2 == 0 ? "Looking for language exchange partners!" : "Want to meet new people!");
+                user.setAboutme(aboutMe);
+                
+                user.setLookingFor("Looking for friends with similar interests");
                 user.setBioProvided(true);
                 
                 // Avatar generation
@@ -278,14 +334,30 @@ public class UserController {
     // }
 
     @GetMapping("/recommendations")
-    public List<Long> getRecommendations() {
-        List<Long> allUsers = userRepository.findAll()
-                .stream()
+    public List<Long> getRecommendations(@RequestParam(required = false) String gender) {
+        List<User> allUsers = userRepository.findAll();
+        
+        // Получаем текущего пользователя
+        User currentUser = userProfileService.getCurrentUser();
+        
+        // Фильтруем пользователей
+        List<User> filteredUsers = allUsers.stream()
+            .filter(user -> !user.getId().equals(currentUser.getId())) // Исключаем текущего пользователя
+            .filter(user -> {
+                // Проверяем пол только если параметр задан и не равен "all"
+                if (gender != null && !gender.equalsIgnoreCase("all")) {
+                    return user.getGender().equalsIgnoreCase(gender);
+                }
+                return true;
+            })
+            .filter(user -> !currentUser.getDismissed().contains(user.getId().intValue())) // Исключаем отклоненных
+            .filter(user -> !currentUser.getConnections().contains(user.getId().intValue())) // Исключаем существующие connections
+            .collect(Collectors.toList());
+        
+        return filteredUsers.stream()
                 .map(User::getId)
+                .limit(20)
                 .collect(Collectors.toList());
-
-        // Показываем только 10 пользователям
-        return allUsers.stream().limit(100).toList();
     }
 
     // add dismissed
@@ -383,6 +455,7 @@ public class UserController {
     private boolean canAccessUserProfile(User targetUser) {
         User currentUser = userProfileService.getCurrentUser();
         return true; // Пока возвращаем true
+    }
 
     // add connections requests
     @GetMapping("/{id}/connections")

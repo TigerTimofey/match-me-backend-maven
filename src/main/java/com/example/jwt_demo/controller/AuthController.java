@@ -64,14 +64,12 @@ public class AuthController {
                 user.getGender(),
                 user.getLanguages(),
                 user.getHobbies(),
-                user.getDismissed(),
-                user.getOutcomeRequests(),
-                user.getIncomeRequests(),
-                user.getConnections(),
                 user.getImage(),
                 user.getAboutme(),
                 user.getLookingFor(),
-                user.getBioProvided(), null);
+                false,
+                false
+        );
         userRepository.save(newUser);
         return "User registered successfully!";
     }
@@ -96,8 +94,8 @@ public class AuthController {
                         user.getImage(),
                         user.getAboutme(),
                         user.getLookingFor(),
-                        user.getBioProvided(),
-                        null
+                        false,
+                        false
                     );
                     userRepository.save(newUser);
                     successCount++;

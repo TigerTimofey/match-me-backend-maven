@@ -7,7 +7,7 @@ import com.example.jwt_demo.model.User;
 
 @Component
 public class UserMapper {
-
+    
     // Преобразование User в UserProfileDTO
     public UserProfileDTO toProfileDTO(User user, boolean includePrivateInfo) {
         UserProfileDTO dto = new UserProfileDTO();
@@ -23,13 +23,10 @@ public class UserMapper {
         dto.setGender(user.getGender());
         dto.setLanguages(user.getLanguages());
         dto.setHobbies(user.getHobbies());
-        dto.setDismissed(user.getDismissed());
-        dto.setOutcomeRequests(user.getOutcomeRequests());
-        dto.setIncomeRequests(user.getIncomeRequests());
-        dto.setConnections(user.getConnections());
         dto.setImage(user.getImage());
         dto.setAboutme(user.getAboutme());
         dto.setLookingFor(user.getLookingFor());
+        dto.setBioProvided(user.getBioProvided() != null ? user.getBioProvided() : user.getIsBioProvided());
         return dto;
     }
 
@@ -47,10 +44,6 @@ public class UserMapper {
         user.setGender(dto.getGender());
         user.setLanguages(dto.getLanguages());
         user.setHobbies(dto.getHobbies());
-        user.setDismissed(dto.getDismissed());
-        user.setOutcomeRequests(dto.getOutcomeRequests());
-        user.setIncomeRequests(dto.getIncomeRequests());
-        user.setConnections(dto.getConnections());
         user.setImage(dto.getImage());
         user.setAboutme(dto.getAboutme());
         user.setLookingFor(dto.getLookingFor());
