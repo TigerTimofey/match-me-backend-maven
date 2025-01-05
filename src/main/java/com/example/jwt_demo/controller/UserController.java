@@ -1,15 +1,19 @@
 package com.example.jwt_demo.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,6 +30,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.jwt_demo.dto.UserProfileDTO;
+import com.example.jwt_demo.localdatabase.Hobbies;
+import com.example.jwt_demo.localdatabase.Languages;
+import com.example.jwt_demo.localdatabase.Locations;
 import com.example.jwt_demo.mapper.UserMapper;
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
@@ -40,10 +48,92 @@ public class UserController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final UserProfileService userProfileService;
+    @Autowired
+    private final PasswordEncoder encoder;
+
+    @Autowired
+    private final RestTemplate restTemplate;
+
+    @GetMapping("/generate")
+    public ResponseEntity<String> generateTestUsers(@RequestParam(defaultValue = "100") int count) {
+        List<User> users = new ArrayList<>();
+        List<String> cities = new ArrayList<>(Locations.getLocations().keySet());
+        List<String> allHobbies = new ArrayList<>(Hobbies.getHobbies().keySet());
+        List<String> allLanguages = new ArrayList<>(Languages.getLanguages().keySet());
+        Random random = new Random();
+
+        for (int i = 0; i < count; i++) {
+            try {
+                String email = "user" + i + "@gmail.com";
+                if (userRepository.existsByUsername(email)) {
+                    System.out.println("User with email " + email + " already exists, skipping...");
+                    continue;
+                }
+
+                User user = new User();
+                user.setUsername(email);
+                user.setPassword(encoder.encode("password"));
+                user.setName("Test User " + i);
+                user.setLastname("Lastname " + i);
+                user.setCity(cities.get(i % cities.size()));
+                user.setAge(i % 100);
+                user.setGender(random.nextBoolean() ? "Male" : "Female");
+
+                List<String> userHobbies = random.ints(2 + random.nextInt(2), 0, allHobbies.size())
+                        .distinct()
+                        .limit(3)
+                        .mapToObj(allHobbies::get)
+                        .toList();
+                user.setHobbies(userHobbies);
+
+                List<String> userLanguages = new ArrayList<>(List.of("Estonian", "English"));
+                if (random.nextInt(2) > 0) {
+                    String additionalLanguage = allLanguages.get(random.nextInt(3) + 2);
+                    if (!userLanguages.contains(additionalLanguage)) {
+                        userLanguages.add(additionalLanguage);
+                    }
+                }
+                user.setLanguages(userLanguages);
+
+                user.setAboutme(String.format(
+                        "Hi! I'm interested in %s. I speak %s. %s",
+                        String.join(" and ", userHobbies),
+                        String.join(" and ", userLanguages),
+                        i % 2 == 0 ? "Looking for language exchange partners!" : "Want to meet new people!"));
+                user.setLookingFor("Looking for friends with similar interests");
+                user.setBioProvided(true);
+
+                try {
+                    String avatarUrl = "https://api.dicebear.com/7.x/avataaars/png?seed=" + email;
+                    byte[] imageBytes = restTemplate.getForObject(avatarUrl, byte[].class);
+                    if (imageBytes != null && imageBytes.length > 0) {
+                        user.setImage(imageBytes);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Failed to fetch avatar for " + email + ": " + e.getMessage());
+                }
+
+                userRepository.save(user);
+                users.add(user);
+            } catch (Exception e) {
+                System.err.println("Error generating user at index " + i + ": " + e.getMessage());
+            }
+        }
+
+        return ResponseEntity.ok("Generated " + users.size() + " test users with avatars");
+    }
 
     @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    // Delete all users
+    @DeleteMapping("/all")
+    public ResponseEntity<String> deleteAllUsers() {
+        long count = userRepository.count();
+        userRepository.deleteAll();
+        return ResponseEntity.ok("Deleted " + count + " users");
     }
 
     @DeleteMapping("/{id}")
@@ -197,7 +287,7 @@ public class UserController {
                 .collect(Collectors.toList());
 
         // Показываем только 10 пользователям
-        return allUsers.stream().limit(100).toList();
+        return allUsers.stream().limit(200).toList();
     }
 
     // add dismissed
