@@ -163,6 +163,7 @@ public class UserController {
             }
 
             User currentUser = userProfileService.getCurrentUser();
+
             if (updates.containsKey("name")) {
                 currentUser.setName((String) updates.get("name"));
             } else {
@@ -177,7 +178,7 @@ public class UserController {
             return userProfileService.updateUser(id, updates);
 
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid input data", e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid input data", e);
         }
     }
 
