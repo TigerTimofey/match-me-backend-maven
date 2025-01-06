@@ -142,8 +142,9 @@ public class UserController {
             userRepository.deleteById(id);
             return "User deleted successfully!";
         } else {
-            return "Error: User not found!";
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found or inaccessible");
         }
+
     }
 
     @PatchMapping("/{id}")
@@ -287,8 +288,7 @@ public class UserController {
                 .map(User::getId)
                 .collect(Collectors.toList());
 
-        // Показываем только 10 пользователям
-        return allUsers.stream().limit(200).toList();
+        return allUsers.stream().limit(600).toList();
     }
 
     // add dismissed

@@ -11,6 +11,8 @@ public class UserMapper {
     // Преобразование User в UserProfileDTO
     public UserProfileDTO toProfileDTO(User user) {
         UserProfileDTO dto = new UserProfileDTO();
+
+        dto.setId(user.getId());
         dto.setName(user.getName());
         dto.setLastname(user.getLastname());
         dto.setCity(user.getCity());
