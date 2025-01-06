@@ -86,7 +86,7 @@ public class UserController {
                         .toList();
                 user.setHobbies(userHobbies);
 
-                List<String> userLanguages = new ArrayList<>(List.of("Estonian", "English"));
+                List<String> userLanguages = new ArrayList<>(List.of("English"));
                 if (random.nextInt(2) > 0) {
                     String additionalLanguage = allLanguages.get(random.nextInt(3) + 2);
                     if (!userLanguages.contains(additionalLanguage)) {
