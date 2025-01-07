@@ -7,6 +7,7 @@ import lombok.Data;
 @Data
 public class UserProfileDTO {
     private Long id;
+    private String username;
     private String name;
     private String lastname;
     private String city;
@@ -14,11 +15,8 @@ public class UserProfileDTO {
     private String gender;
     private List<String> languages;
     private List<String> hobbies;
-    private List<Integer> dismissed;
-    private List<Integer> outcomeRequests;
-    private List<Integer> incomeRequests;
-    private List<Integer> connections;
     private byte[] image;
     private String aboutme;
     private String lookingFor;
+    private Boolean bioProvided;
 }
