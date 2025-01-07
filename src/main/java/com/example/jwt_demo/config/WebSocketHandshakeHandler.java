@@ -22,9 +22,11 @@ public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
                 
             String userId = queryParams.get("userId");
             if (userId != null) {
+                System.out.println("WebSocket connection established for user: " + userId);
                 return new UserPrincipal(userId);
             }
         }
+        System.out.println("No user ID found in WebSocket connection");
         return null;
     }
 

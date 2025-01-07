@@ -14,6 +14,16 @@ public class ChatMessage {
     private MessageType type;
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE
+        CHAT, JOIN, LEAVE, STATUS, STATUS_CHECK
+    }
+
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "content='" + content + '\'' +
+                ", sender='" + sender + '\'' +
+                ", recipient='" + recipient + '\'' +
+                ", type=" + type +
+                '}';
     }
 }
