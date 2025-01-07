@@ -11,6 +11,7 @@ public class UserMapper {
     // Преобразование User в UserProfileDTO
     public UserProfileDTO toProfileDTO(User user, boolean includePrivateInfo) {
         UserProfileDTO dto = new UserProfileDTO();
+
         dto.setId(user.getId());
         // Email включается только если includePrivateInfo = true
         if (includePrivateInfo) {
