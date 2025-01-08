@@ -9,9 +9,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.example.jwt_demo.model.ChatMessage;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
 @Service
 public class UserStatusService {
     private final Set<String> onlineUsers = Collections.newSetFromMap(new ConcurrentHashMap<>());

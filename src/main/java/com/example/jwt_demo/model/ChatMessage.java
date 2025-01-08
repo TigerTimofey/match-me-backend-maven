@@ -12,6 +12,8 @@ public class ChatMessage {
     private String sender;
     private String recipient;
     private MessageType type;
+    private String timestamp;
+    private boolean sentByMe;
 
     public enum MessageType {
         CHAT, JOIN, LEAVE, STATUS, STATUS_CHECK
