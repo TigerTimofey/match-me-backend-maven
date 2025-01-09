@@ -16,7 +16,7 @@ public class ChatMessage {
     private boolean sentByMe;
 
     public enum MessageType {
-        CHAT, JOIN, LEAVE, STATUS, STATUS_CHECK
+        CHAT, JOIN, LEAVE, STATUS, STATUS_CHECK, TYPING
     }
 
     @Override

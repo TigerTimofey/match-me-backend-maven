@@ -31,7 +31,7 @@ public class ChatController {
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
         LocalDateTime now = LocalDateTime.now();
-        chatMessage.setSender(principal.getName());
+        chatMessage.setSender(chatMessage.getSender());
         chatMessage.setTimestamp(now.toString());
         
         // Сохраняем сообщение в БД
@@ -41,6 +41,7 @@ public class ChatController {
         messageEntity.setRecipient(chatMessage.getRecipient());
         messageEntity.setType(chatMessage.getType());
         messageEntity.setTimestamp(now);
+        messageEntity.setRead(false);
         
         // Сохраняем сообщение
         messageRepository.save(messageEntity);
@@ -62,7 +63,7 @@ public class ChatController {
 
     @MessageMapping("/chat.join")
     public void joinChat(@Payload ChatMessage chatMessage, Principal principal) {
-        String userId = principal.getName();
+        String userId = chatMessage.getSender();
         userStatusService.userConnected(userId);
         
         // Отправляем сообщение о присоединении
@@ -84,15 +85,15 @@ public class ChatController {
     }
 
     @MessageMapping("/user.online")
-    public void userOnline(Principal principal) {
-        String userId = principal.getName();
+    public void userOnline(@Payload ChatMessage chatMessage) {
+        String userId = chatMessage.getSender();
         userStatusService.userConnected(userId);
         sendStatusMessage(userId, "ONLINE");
     }
 
     @MessageMapping("/user.offline")
-    public void userOffline(Principal principal) {
-        String userId = principal.getName();
+    public void userOffline(@Payload ChatMessage chatMessage) {
+        String userId = chatMessage.getSender();
         userStatusService.userDisconnected(userId);
         sendStatusMessage(userId, "OFFLINE");
     }
@@ -105,6 +106,30 @@ public class ChatController {
             System.out.println("Sending status message: " + status);
             messagingTemplate.convertAndSend("/topic/status", status);
         });
+    }
+
+    @MessageMapping("/chat.typing")
+    public void handleTypingStatus(@Payload ChatMessage chatMessage, Principal principal) {
+        System.out.println("=== Получено сообщение о печатании ===");
+        System.out.println("От пользователя: " + principal.getName());
+        System.out.println("Для пользователя: " + chatMessage.getRecipient());
+        
+        chatMessage.setSender(chatMessage.getSender());
+        chatMessage.setType(ChatMessage.MessageType.TYPING);
+        
+        System.out.println("Отправляем уведомление о печатании получателю: " + chatMessage.getRecipient());
+        
+        try {
+            messagingTemplate.convertAndSendToUser(
+                chatMessage.getRecipient(),
+                "/queue/messages",
+                chatMessage
+            );
+            System.out.println("Уведомление о печатании успешно отправлено");
+        } catch (Exception e) {
+            System.err.println("Ошибка при отправке уведомления о печатании: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     private void sendStatusMessage(String userId, String status) {

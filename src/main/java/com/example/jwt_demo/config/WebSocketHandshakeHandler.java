@@ -4,42 +4,43 @@ import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
-import org.springframework.web.util.UriComponentsBuilder;
 
+import com.example.jwt_demo.security.JwtUtil;
+import com.example.jwt_demo.service.CustomUserDetailsService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 public class WebSocketHandshakeHandler extends DefaultHandshakeHandler {
+    
+    private final JwtUtil jwtUtil;
+    private final CustomUserDetailsService userDetailsService;
     
     @Override
     protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        String query = request.getURI().getQuery();
-        if (query != null) {
-            Map<String, String> queryParams = UriComponentsBuilder
-                .fromUriString(request.getURI().toString())
-                .build()
-                .getQueryParams()
-                .toSingleValueMap();
-                
-            String userId = queryParams.get("userId");
-            if (userId != null) {
-                System.out.println("WebSocket connection established for user: " + userId);
-                return new UserPrincipal(userId);
-            }
+        String token = extractToken(request);
+        if (token != null && jwtUtil.validateJwtToken(token)) {
+            String username = jwtUtil.getUserNameFromJwtToken(token);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         }
-        System.out.println("No user ID found in WebSocket connection");
         return null;
     }
 
-    private static class UserPrincipal implements Principal {
-        private final String name;
-
-        public UserPrincipal(String name) {
-            this.name = name;
+    private String extractToken(ServerHttpRequest request) {
+        String query = request.getURI().getQuery();
+        if (query != null && query.contains("token=")) {
+            String[] params = query.split("&");
+            for (String param : params) {
+                if (param.startsWith("token=")) {
+                    return param.substring(6); // длина "token=" = 6
+                }
+            }
         }
-
-        @Override
-        public String getName() {
-            return name;
-        }
+        return null;
     }
 } 

@@ -41,6 +41,9 @@ public class MessageEntity {
     @Enumerated(EnumType.STRING)
     private ChatMessage.MessageType type;
 
+    @Column(nullable = false)
+    private boolean read = false;
+
     @Transient
     private boolean sentByRequester;
 } 
