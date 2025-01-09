@@ -14,6 +14,7 @@ public class ChatMessage {
     private MessageType type;
     private String timestamp;
     private boolean sentByMe;
+    private boolean read;
 
     public enum MessageType {
         CHAT, JOIN, LEAVE, STATUS, STATUS_CHECK, TYPING
@@ -27,5 +28,9 @@ public class ChatMessage {
                 ", recipient='" + recipient + '\'' +
                 ", type=" + type +
                 '}';
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }
