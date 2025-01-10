@@ -235,7 +235,7 @@ public class UserController {
         response.put("lastname", user.getLastname());
         response.put("city", user.getCity());
         response.put("age", user.getAge());
-        response.put("genres", user.getGender());
+        response.put("gender", user.getGender());
         response.put("hobbies", user.getHobbies());
         response.put("languages", user.getLanguages());
 
