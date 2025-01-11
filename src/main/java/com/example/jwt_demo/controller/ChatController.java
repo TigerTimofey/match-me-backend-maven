@@ -2,17 +2,21 @@ package com.example.jwt_demo.controller;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.springframework.data.domain.Pageable;
 import com.example.jwt_demo.model.ChatMessage;
 import com.example.jwt_demo.model.MessageEntity;
 import com.example.jwt_demo.repository.MessageRepository;
@@ -204,5 +208,52 @@ public class ChatController {
                     return chatMessage;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/api/messages/{userId1}/{userId2}/paginated")
+    @ResponseBody
+    public Map<String, Object> getPaginatedChatHistory(
+            @PathVariable String userId1,
+            @PathVariable String userId2,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+
+        System.out.println("Getting paginated chat history for users: " + userId1 + " and " + userId2);
+        System.out.println("Page: " + page + ", Size: " + size);
+
+        // Создаем объект Pageable
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Получаем страницу сообщений
+        List<MessageEntity> messages = messageRepository.findPaginatedMessages(
+                userId1, userId2, pageable);
+
+        // Получаем общее количество сообщений
+        long totalMessages = messageRepository.countMessagesBetweenUsers(userId1, userId2);
+
+        // Конвертируем сообщения в DTO
+        List<ChatMessage> chatMessages = messages.stream()
+                .map(msg -> {
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setContent(msg.getContent());
+                    chatMessage.setSender(msg.getSender());
+                    chatMessage.setRecipient(msg.getRecipient());
+                    chatMessage.setType(msg.getType());
+                    chatMessage.setTimestamp(msg.getTimestamp().toString());
+                    chatMessage.setSentByMe(msg.getSender().equals(userId1));
+                    return chatMessage;
+                })
+                .collect(Collectors.toList());
+
+        // Формируем ответ
+        Map<String, Object> response = new HashMap<>();
+        response.put("messages", chatMessages);
+        response.put("currentPage", page);
+        response.put("totalPages", (int) Math.ceil((double) totalMessages / size));
+        response.put("totalMessages", totalMessages);
+        response.put("hasNext", (page + 1) * size < totalMessages);
+        response.put("hasPrevious", page > 0);
+
+        return response;
     }
 }
