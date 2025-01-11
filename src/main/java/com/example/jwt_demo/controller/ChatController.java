@@ -28,6 +28,24 @@ public class ChatController {
     private final UserStatusService userStatusService;
     private final MessageRepository messageRepository;
 
+    @MessageMapping("/chat.acceptBra")
+    public void sendAcceptBraMessage() {
+        // Логируем полученное сообщение
+        System.out.println("Received 'ACCEPT BRA'");
+
+        // Создаем сообщение для фронтенда
+        ChatMessage responseMessage = new ChatMessage();
+        responseMessage.setSender("Server");
+        responseMessage.setRecipient("User");
+        responseMessage.setContent("Accepted"); // Отправляем "Accepted" обратно
+        responseMessage.setType(ChatMessage.MessageType.TEXT);
+        responseMessage.setTimestamp(LocalDateTime.now().toString());
+
+        // Отправляем сообщение в топик
+        messagingTemplate.convertAndSend("/topic/messages", responseMessage);
+        System.out.println("Sending 'Accepted' message to /topic/messages");
+    }
+
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
         LocalDateTime now = LocalDateTime.now();
