@@ -59,11 +59,37 @@ public class User {
     private Boolean isBioProvided = false;
     private Boolean bioProvided = false;
 
+    public User(Long id, String username, String password, String name, String lastname,
+                String city, Integer age, String gender, List<String> languages,
+                List<String> hobbies, byte[] image, String aboutme, String lookingFor,
+                Boolean bioProvided, Boolean isBioProvided) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.lastname = lastname;
+        this.city = city;
+        this.age = age;
+        this.gender = gender;
+        this.languages = languages != null ? languages : new ArrayList<>();
+        this.hobbies = hobbies != null ? hobbies : new ArrayList<>();
+        this.image = image;
+        this.aboutme = aboutme;
+        this.lookingFor = lookingFor;
+        this.bioProvided = bioProvided;
+        this.isBioProvided = isBioProvided;
+        this.dismissed = new ArrayList<>();
+        this.outcomeRequests = new ArrayList<>();
+        this.incomeRequests = new ArrayList<>();
+        this.connections = new ArrayList<>();
+    }
+
     public Boolean getBioProvided() {
-        return bioProvided;
+        return bioProvided != null ? bioProvided : isBioProvided;
     }
 
     public void setBioProvided(Boolean bioProvided) {
         this.bioProvided = bioProvided;
+        this.isBioProvided = bioProvided;
     }
 }
