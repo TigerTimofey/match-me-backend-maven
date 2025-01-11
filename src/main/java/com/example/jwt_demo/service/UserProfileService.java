@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.example.jwt_demo.dto.UserProfileDTO;
+import com.example.jwt_demo.mapper.UserMapper;
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
 
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserProfileService {
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,18 +60,6 @@ public class UserProfileService {
         if (updates.containsKey("hobbies")) {
             user.setHobbies((List<String>) updates.get("hobbies"));
         }
-        if (updates.containsKey("dismissed")) {
-            user.setDismissed((List<Integer>) updates.get("dismissed"));
-        }
-        if (updates.containsKey("outcomeRequests")) {
-            user.setOutcomeRequests((List<Integer>) updates.get("outcomeRequests"));
-        }
-        if (updates.containsKey("incomeRequests")) {
-            user.setIncomeRequests((List<Integer>) updates.get("incomeRequests"));
-        }
-        if (updates.containsKey("connections")) {
-            user.setConnections((List<Integer>) updates.get("connections"));
-        }
         if (updates.containsKey("aboutme")) {
             user.setAboutme((String) updates.get("aboutme"));
         }
@@ -89,9 +79,10 @@ public class UserProfileService {
     }
 
     private UserProfileDTO convertToProfileDTO(User user) {
-        UserProfileDTO dto = new UserProfileDTO();
-
-        return dto;
+        User currentUser = getCurrentUser();
+        boolean isOwner = currentUser != null && currentUser.getId().equals(user.getId());
+        
+        return userMapper.toProfileDTO(user, isOwner);
     }
 
 }

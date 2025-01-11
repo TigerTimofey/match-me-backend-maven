@@ -60,4 +60,24 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorDetails, status);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", LocalDateTime.now());
+        errorDetails.put("status", HttpStatus.NOT_FOUND.value());
+        errorDetails.put("error", "Not Found");
+        errorDetails.put("message", "Resource not found");  // Generic message
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex) {
+        Map<String, Object> errorDetails = new HashMap<>();
+        errorDetails.put("timestamp", LocalDateTime.now());
+        errorDetails.put("status", HttpStatus.NOT_FOUND.value());  // Return 404 instead of 403
+        errorDetails.put("error", "Not Found");
+        errorDetails.put("message", "Resource not found");  // Generic message
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+    }
 }
