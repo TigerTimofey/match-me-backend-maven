@@ -54,6 +54,25 @@ public class UserController {
     @Autowired
     private final RestTemplate restTemplate;
 
+    @GetMapping("/list/names-and-profiles")
+    public List<Map<String, String>> getUsersWithNamesAndProfiles() {
+        return userRepository.findAll().stream()
+                .map(user -> Map.of(
+                        "name", user.getName(),
+                        "profileLink", "/api/users/" + user.getId() + "/profile"))
+                .toList();
+    }
+
+    @GetMapping("/{id}/names-and-profiles")
+    public Map<String, String> getUserNameAndProfileById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        return Map.of(
+                "name", user.getName(),
+                "profileLink", "/api/users/" + user.getId() + "/profile");
+    }
+
     @GetMapping("/generate")
     public ResponseEntity<String> generateTestUsers(@RequestParam(defaultValue = "100") int count) {
         List<User> users = new ArrayList<>();
@@ -410,4 +429,5 @@ public class UserController {
 
         return ResponseEntity.ok(user);
     }
+
 }
