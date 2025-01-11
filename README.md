@@ -72,7 +72,7 @@ Option 2: Through IDE (Recommended)
 - GET `/api/messages/{userId}/{connectionId}` - message history
 - WebSocket `/ws` - chat connection
 
-## Requirements ⚙️
+## Requirements
 
 - Java 17+
 - Maven 3.8+
