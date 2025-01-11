@@ -350,7 +350,36 @@ public class UserController {
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
     }
 
+
+    // For /users/{id}/profile
+    @GetMapping("/{id}/profile")
+    public UserProfileDTO getUserProfileById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return userMapper.toProfileDTO(user);
+    }
+
+    @GetMapping("/{id}/bio")
+    public Map<String, Object> getUserBioById(@PathVariable Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("name", user.getName());
+        response.put("lastname", user.getLastname());
+        response.put("city", user.getCity());
+        response.put("age", user.getAge());
+        response.put("gender", user.getGender());
+        response.put("hobbies", user.getHobbies());
+        response.put("languages", user.getLanguages());
+
+        return response;
+    }
+
+
     // Get current user's bio information
+
     @GetMapping("/me/bio")
     public Map<String, Object> getMyBio() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
