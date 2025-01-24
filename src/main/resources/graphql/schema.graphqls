@@ -1,0 +1,58 @@
+type User {
+    id: ID!
+    username: String!
+    email: String!
+    name: String
+    profilePicture: String
+    bio: Bio
+    profile: Profile
+}
+
+type Bio {
+    id: ID!
+    user: User!
+    longWalks: Boolean
+    movies: Boolean
+    interests: [String]
+    about: String
+}
+
+type Profile {
+    id: ID!
+    user: User!
+    headline: String
+    location: String
+    education: String
+    work: String
+}
+
+type Query {
+    user(id: ID!): User
+    bio(id: ID!): Bio
+    profile(id: ID!): Profile
+    me: User
+    myBio: Bio
+    myProfile: Profile
+    recommendations: [User]
+    connections: [User]
+}
+
+type Subscription {
+    messageReceived: Message
+    matchNotification: Match
+}
+
+type Message {
+    id: ID!
+    from: User!
+    to: User!
+    content: String!
+    timestamp: String!
+}
+
+type Match {
+    id: ID!
+    user1: User!
+    user2: User!
+    timestamp: String!
+} 

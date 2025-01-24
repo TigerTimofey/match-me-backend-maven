@@ -113,11 +113,8 @@ public class AuthController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            User user = userRepository.findByUsername(username);
-            if (user == null) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-            }
-            return user;
+            return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
     }

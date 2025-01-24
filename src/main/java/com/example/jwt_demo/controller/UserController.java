@@ -23,11 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.server.ResponseStatusException;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.example.jwt_demo.dto.UserProfileDTO;
 import com.example.jwt_demo.localdatabase.Hobbies;
@@ -37,6 +34,8 @@ import com.example.jwt_demo.mapper.UserMapper;
 import com.example.jwt_demo.model.User;
 import com.example.jwt_demo.repository.UserRepository;
 import com.example.jwt_demo.service.UserProfileService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -219,7 +218,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            return userRepository.findByUsername(username);
+            return userRepository.findByUsername(username).orElse(null);
         }
         return null;
     }
@@ -229,7 +228,8 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            User user = userRepository.findByUsername(username);
+            User user = userRepository.findByUsername(username).orElseThrow(() -> 
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
             return userMapper.toProfileDTO(user);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
@@ -267,11 +267,8 @@ public class UserController {
 
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            User user = userRepository.findByUsername(username);
-
-            if (user == null) {
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "No user");
-            }
+            User user = userRepository.findByUsername(username).orElseThrow(() -> 
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
             Map<String, Object> response = new HashMap<>();
             response.put("id", user.getId());
@@ -286,8 +283,7 @@ public class UserController {
             return response;
         }
 
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
-                "Unauthorized user - invalid or missing Bearer token");
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
     }
 
     // CONNECTIONS

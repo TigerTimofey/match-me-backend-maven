@@ -27,7 +27,8 @@ public class UserProfileService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            return userRepository.findByUsername(username);
+            return userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
     }

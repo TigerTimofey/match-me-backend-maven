@@ -3,12 +3,14 @@ package com.example.jwt_demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,11 +30,18 @@ public class User {
     @Column(unique = true)
     private String username;
     private String password;
+    private String email;
     private String name;
     private String lastname;
     private String city;
     private Integer age;
     private String gender;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Bio bio;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
 
     @ElementCollection
     private List<String> languages = new ArrayList<>();
@@ -54,6 +63,8 @@ public class User {
 
     @Column(columnDefinition = "BYTEA")
     private byte[] image;
+
+    private String profilePicture;
     private String aboutme;
     private String lookingFor;
     private Boolean isBioProvided = false;
