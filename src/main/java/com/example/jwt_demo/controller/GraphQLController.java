@@ -42,7 +42,7 @@ public class GraphQLController {
         return userService.findByUsername(auth.getName());
     }
 
-    @QueryMapping
+    @QueryMapping(name = "myBio")
     public Bio myBio() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findByUsername(auth.getName());

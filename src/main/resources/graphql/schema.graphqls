@@ -55,4 +55,8 @@ type Query {
     me: User
     recommendations: [User]
     connections: [User]
+    myBio: Bio
+    bio(id: ID!): Bio
+    profile(id: ID!): Profile
+    myProfile: Profile
 } 

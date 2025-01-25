@@ -23,11 +23,40 @@ public class UserService {
     }
 
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username).orElse(null);
+        User user = userRepository.findByUsername(username).orElse(null);
+        if (user != null && user.getBio() == null) {
+            Bio bio = new Bio();
+            bio.setUser(user);
+            bio.setName(user.getName());
+            bio.setLastname(user.getLastname());
+            bio.setCity(user.getCity());
+            bio.setAge(user.getAge());
+            bio.setGender(user.getGender());
+            bio.setLanguages(user.getLanguages());
+            bio.setHobbies(user.getHobbies());
+            bio.setAbout(user.getAboutme());
+            user.setBio(bio);
+            user = userRepository.save(user);
+        }
+        return user;
     }
 
     public Bio findBioById(Long id) {
         User user = findById(id);
+        if (user != null && user.getBio() == null) {
+            Bio bio = new Bio();
+            bio.setUser(user);
+            bio.setName(user.getName());
+            bio.setLastname(user.getLastname());
+            bio.setCity(user.getCity());
+            bio.setAge(user.getAge());
+            bio.setGender(user.getGender());
+            bio.setLanguages(user.getLanguages());
+            bio.setHobbies(user.getHobbies());
+            bio.setAbout(user.getAboutme());
+            user.setBio(bio);
+            user = userRepository.save(user);
+        }
         return user != null ? user.getBio() : null;
     }
 
@@ -37,7 +66,6 @@ public class UserService {
     }
 
     public List<User> getRecommendations(String username) {
-        // Создаем тестовые данные для рекомендаций
         List<User> recommendations = new ArrayList<>();
         
         for (int i = 1; i <= 5; i++) {
@@ -55,6 +83,19 @@ public class UserService {
             user.setLookingFor("Looking for friends");
             user.setBioProvided(true);
             
+            // Создаем Bio для тестового пользователя
+            Bio bio = new Bio();
+            bio.setUser(user);
+            bio.setName(user.getName());
+            bio.setLastname(user.getLastname());
+            bio.setCity(user.getCity());
+            bio.setAge(user.getAge());
+            bio.setGender(user.getGender());
+            bio.setLanguages(user.getLanguages());
+            bio.setHobbies(user.getHobbies());
+            bio.setAbout(user.getAboutme());
+            user.setBio(bio);
+            
             recommendations.add(user);
         }
         
@@ -62,7 +103,6 @@ public class UserService {
     }
 
     public List<User> getConnections(String username) {
-        // Создаем тестовые данные для подключений
         List<User> connections = new ArrayList<>();
         
         for (int i = 1; i <= 3; i++) {
@@ -79,6 +119,19 @@ public class UserService {
             user.setAboutme("Connected user " + i);
             user.setLookingFor("Already connected!");
             user.setBioProvided(true);
+            
+            // Создаем Bio для тестового пользователя
+            Bio bio = new Bio();
+            bio.setUser(user);
+            bio.setName(user.getName());
+            bio.setLastname(user.getLastname());
+            bio.setCity(user.getCity());
+            bio.setAge(user.getAge());
+            bio.setGender(user.getGender());
+            bio.setLanguages(user.getLanguages());
+            bio.setHobbies(user.getHobbies());
+            bio.setAbout(user.getAboutme());
+            user.setBio(bio);
             
             connections.add(user);
         }
