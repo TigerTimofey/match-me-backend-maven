@@ -1,9 +1,29 @@
+schema {
+    query: Query
+}
+
 type User {
     id: ID!
     username: String!
-    email: String!
+    password: String
+    email: String
     name: String
+    lastname: String
+    city: String
+    age: Int
+    gender: String
+    languages: [String]
+    hobbies: [String]
+    dismissed: [Int]
+    outcomeRequests: [Int]
+    incomeRequests: [Int]
+    connections: [Int]
+    image: String
     profilePicture: String
+    aboutme: String
+    lookingFor: String
+    isBioProvided: Boolean
+    bioProvided: Boolean
     bio: Bio
     profile: Profile
 }
@@ -11,9 +31,13 @@ type User {
 type Bio {
     id: ID!
     user: User!
-    longWalks: Boolean
-    movies: Boolean
-    interests: [String]
+    name: String
+    lastname: String
+    city: String
+    age: Int
+    gender: String
+    languages: [String]
+    hobbies: [String]
     about: String
 }
 
@@ -28,31 +52,7 @@ type Profile {
 
 type Query {
     user(id: ID!): User
-    bio(id: ID!): Bio
-    profile(id: ID!): Profile
     me: User
-    myBio: Bio
-    myProfile: Profile
     recommendations: [User]
     connections: [User]
-}
-
-type Subscription {
-    messageReceived: Message
-    matchNotification: Match
-}
-
-type Message {
-    id: ID!
-    from: User!
-    to: User!
-    content: String!
-    timestamp: String!
-}
-
-type Match {
-    id: ID!
-    user1: User!
-    user2: User!
-    timestamp: String!
 } 

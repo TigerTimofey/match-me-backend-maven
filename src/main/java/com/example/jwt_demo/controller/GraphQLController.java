@@ -87,4 +87,12 @@ public class GraphQLController {
     public User user(Profile profile) {
         return profile.getUser();
     }
+
+    @SchemaMapping
+    public String image(User user) {
+        if (user.getUsername() != null) {
+            return "https://api.dicebear.com/7.x/avataaars/png?seed=" + user.getUsername();
+        }
+        return null;
+    }
 } 

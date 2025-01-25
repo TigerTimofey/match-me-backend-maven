@@ -24,6 +24,8 @@ import com.example.jwt_demo.security.AuthEntryPointJwt;
 import com.example.jwt_demo.security.AuthTokenFilter;
 import com.example.jwt_demo.service.CustomUserDetailsService;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -65,13 +67,22 @@ public class WebSecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> 
-                auth.requestMatchers("/graphql", "/graphiql", "/api/auth/**", "/ws/**").permitAll()
+                auth.requestMatchers("/graphql/**", "/graphiql/**", "/api/auth/**", "/ws/**").permitAll()
                     .requestMatchers("/api/**").authenticated()
                     .anyRequest().permitAll()
             );
 
+        // Отключаем JWT фильтр для GraphQL
+        http.addFilterBefore((request, response, chain) -> {
+            String path = ((HttpServletRequest) request).getRequestURI();
+            if (path.startsWith("/graphql") || path.startsWith("/graphiql")) {
+                chain.doFilter(request, response);
+            } else {
+                authenticationJwtTokenFilter().doFilter(request, response, chain);
+            }
+        }, UsernamePasswordAuthenticationFilter.class);
+
         http.authenticationProvider(authenticationProvider());
-        http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         
         return http.build();
     }
@@ -83,6 +94,7 @@ public class WebSecurityConfig {
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
