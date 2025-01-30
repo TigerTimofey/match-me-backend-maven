@@ -3,6 +3,8 @@ package com.example.jwt_demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -37,9 +39,11 @@ public class User {
     private Integer age;
     private String gender;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Bio bio;
 
+    @JsonBackReference
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
 
@@ -71,9 +75,9 @@ public class User {
     private Boolean bioProvided = false;
 
     public User(Long id, String username, String password, String name, String lastname,
-                String city, Integer age, String gender, List<String> languages,
-                List<String> hobbies, byte[] image, String aboutme, String lookingFor,
-                Boolean bioProvided, Boolean isBioProvided) {
+            String city, Integer age, String gender, List<String> languages,
+            List<String> hobbies, byte[] image, String aboutme, String lookingFor,
+            Boolean bioProvided, Boolean isBioProvided) {
         this.id = id;
         this.username = username;
         this.password = password;

@@ -1,5 +1,7 @@
 package com.example.jwt_demo.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -11,6 +13,7 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @OneToOne
     @MapsId
     @JoinColumn(name = "user_id")

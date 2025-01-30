@@ -3,6 +3,8 @@ package com.example.jwt_demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -25,6 +27,7 @@ public class Bio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,18 +37,18 @@ public class Bio {
     private String city;
     private Integer age;
     private String gender;
-    
+
     @ElementCollection
     private List<String> languages = new ArrayList<>();
 
     @ElementCollection
     private List<String> hobbies = new ArrayList<>();
-    
+
     @Column(columnDefinition = "TEXT")
     private String about;
 
-    public Bio(Long id, User user, String name, String lastname, String city, 
-               Integer age, String gender, List<String> languages, List<String> hobbies, String about) {
+    public Bio(Long id, User user, String name, String lastname, String city,
+            Integer age, String gender, List<String> languages, List<String> hobbies, String about) {
         this.id = id;
         this.user = user;
         this.name = name;
@@ -57,4 +60,4 @@ public class Bio {
         this.hobbies = hobbies != null ? hobbies : new ArrayList<>();
         this.about = about;
     }
-} 
+}
