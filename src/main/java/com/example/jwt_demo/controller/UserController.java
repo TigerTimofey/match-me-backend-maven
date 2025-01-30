@@ -228,8 +228,8 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            User user = userRepository.findByUsername(username).orElseThrow(() -> 
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
             return userMapper.toProfileDTO(user);
         }
         throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not authenticated");
@@ -267,8 +267,8 @@ public class UserController {
 
         if (authentication != null && authentication.isAuthenticated()) {
             String username = ((UserDetails) authentication.getPrincipal()).getUsername();
-            User user = userRepository.findByUsername(username).orElseThrow(() -> 
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
 
             Map<String, Object> response = new HashMap<>();
             response.put("id", user.getId());

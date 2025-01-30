@@ -1,98 +1,80 @@
 package com.example.jwt_demo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
-
-import com.example.jwt_demo.model.Bio;
 import com.example.jwt_demo.model.Profile;
 import com.example.jwt_demo.model.User;
-import com.example.jwt_demo.service.UserService;
+import com.example.jwt_demo.model.Bio;
+import com.example.jwt_demo.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.stereotype.Controller;
+
+import java.util.List;
 
 @Controller
 public class GraphQLController {
 
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
+    // Get User by ID
     @QueryMapping
-    public User user(@Argument String id) {
-        return userService.findById(Long.parseLong(id));
+    public User user(@Argument Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // Get Bio by ID
     @QueryMapping
-    public Bio bio(@Argument String id) {
-        return userService.findBioById(Long.parseLong(id));
-    }
-
-    @QueryMapping
-    public Profile profile(@Argument String id) {
-        return userService.findProfileById(Long.parseLong(id));
-    }
-
-    @QueryMapping
-    public User me() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.findByUsername(auth.getName());
-    }
-
-    @QueryMapping(name = "myBio")
-    public Bio myBio() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
+    public Bio bio(@Argument Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getBio();
     }
 
+    // Get Profile by ID
     @QueryMapping
-    public Profile myProfile() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findByUsername(auth.getName());
+    public Profile profile(@Argument Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getProfile();
     }
 
+    // Get current user (me)
     @QueryMapping
-    public List<User> recommendations() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.getRecommendations(auth.getName());
+    public User me(@Argument Long id) {
+        // You can replace this with the logic to get the authenticated user if needed
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // Get current user's Bio (myBio)
     @QueryMapping
-    public List<User> connections() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return userService.getConnections(auth.getName());
-    }
-
-    @SchemaMapping
-    public Bio bio(User user) {
+    public Bio myBio(@Argument Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getBio();
     }
 
-    @SchemaMapping
-    public Profile profile(User user) {
+    // Get current user's Profile (myProfile)
+    @QueryMapping
+    public Profile myProfile(@Argument Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return user.getProfile();
     }
 
-    @SchemaMapping
-    public User user(Bio bio) {
-        return bio.getUser();
+    // Get User Recommendations (you can define your own logic for recommendations)
+    @QueryMapping
+    public List<User> recommendations(@Argument Long id) {
+        // Replace this logic with your own to fetch recommendations
+        return userRepository.findAll(); // This is a placeholder for your recommendation logic
     }
 
-    @SchemaMapping
-    public User user(Profile profile) {
-        return profile.getUser();
-    }
-
-    @SchemaMapping
-    public String image(User user) {
-        if (user.getUsername() != null) {
-            return "https://api.dicebear.com/7.x/avataaars/png?seed=" + user.getUsername();
-        }
-        return null;
+    // Get User Connections (you can define your own logic for connections)
+    @QueryMapping
+    public List<User> connections(@Argument Long id) {
+        // Replace this logic with your own to fetch user connections
+        return userRepository.findAll(); // This is a placeholder for your connection logic
     }
 }
