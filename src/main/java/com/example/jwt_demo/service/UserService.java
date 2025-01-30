@@ -18,24 +18,34 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User findById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElse(null);
     }
 
-    public User findByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElse(null);
-        if (user != null && user.getBio() == null) {
-            Bio bio = new Bio();
-            bio.setUser(user);
-            bio.setName(user.getName());
-            bio.setLastname(user.getLastname());
-            bio.setCity(user.getCity());
-            bio.setAge(user.getAge());
-            bio.setGender(user.getGender());
-            bio.setLanguages(user.getLanguages());
-            bio.setHobbies(user.getHobbies());
-            bio.setAbout(user.getAboutme());
-            user.setBio(bio);
+    public User findById(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user != null) {
+            if (user.getBio() == null) {
+                Bio bio = new Bio();
+                bio.setUser(user);
+                bio.setName(user.getName());
+                bio.setLastname(user.getLastname());
+                bio.setCity(user.getCity());
+                bio.setAge(user.getAge());
+                bio.setGender(user.getGender());
+                bio.setLanguages(user.getLanguages());
+                bio.setHobbies(user.getHobbies());
+                bio.setAbout(user.getAboutme());
+                user.setBio(bio);
+            }
+            if (user.getProfile() == null) {
+                Profile profile = new Profile();
+                profile.setUser(user);
+                profile.setLocation(user.getCity());
+                profile.setAboutme(user.getAboutme());
+                profile.setLookingFor(user.getLookingFor());
+                user.setProfile(profile);
+            }
             user = userRepository.save(user);
         }
         return user;
@@ -67,7 +77,7 @@ public class UserService {
 
     public List<User> getRecommendations(String username) {
         List<User> recommendations = new ArrayList<>();
-        
+
         for (int i = 1; i <= 5; i++) {
             User user = new User();
             user.setId((long) i);
@@ -82,7 +92,7 @@ public class UserService {
             user.setAboutme("About user " + i);
             user.setLookingFor("Looking for friends");
             user.setBioProvided(true);
-            
+
             // Создаем Bio для тестового пользователя
             Bio bio = new Bio();
             bio.setUser(user);
@@ -95,16 +105,16 @@ public class UserService {
             bio.setHobbies(user.getHobbies());
             bio.setAbout(user.getAboutme());
             user.setBio(bio);
-            
+
             recommendations.add(user);
         }
-        
+
         return recommendations;
     }
 
     public List<User> getConnections(String username) {
         List<User> connections = new ArrayList<>();
-        
+
         for (int i = 1; i <= 3; i++) {
             User user = new User();
             user.setId((long) i);
@@ -119,7 +129,7 @@ public class UserService {
             user.setAboutme("Connected user " + i);
             user.setLookingFor("Already connected!");
             user.setBioProvided(true);
-            
+
             // Создаем Bio для тестового пользователя
             Bio bio = new Bio();
             bio.setUser(user);
@@ -132,10 +142,10 @@ public class UserService {
             bio.setHobbies(user.getHobbies());
             bio.setAbout(user.getAboutme());
             user.setBio(bio);
-            
+
             connections.add(user);
         }
-        
+
         return connections;
     }
-} 
+}

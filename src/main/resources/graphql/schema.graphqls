@@ -1,62 +1,62 @@
 schema {
-    query: Query
+  query: Query
 }
 
 type User {
-    id: ID!
-    username: String!
-    password: String
-    email: String
-    name: String
-    lastname: String
-    city: String
-    age: Int
-    gender: String
-    languages: [String]
-    hobbies: [String]
-    dismissed: [Int]
-    outcomeRequests: [Int]
-    incomeRequests: [Int]
-    connections: [Int]
-    image: String
-    profilePicture: String
-    aboutme: String
-    lookingFor: String
-    isBioProvided: Boolean
-    bioProvided: Boolean
-    bio: Bio
-    profile: Profile
+  id: ID!
+  username: String!
+  password: String
+  email: String
+  name: String
+  lastname: String
+  city: String
+  age: Int
+  gender: String
+  languages: [String]
+  hobbies: [String]
+  dismissed: [Int]
+  outcomeRequests: [Int]
+  incomeRequests: [Int]
+  connections: [Int]
+  image: String
+  profilePicture: String
+  aboutme: String
+  lookingFor: String
+  isBioProvided: Boolean
+  bioProvided: Boolean
+  bio: Bio
+  profile: Profile
 }
 
 type Bio {
-    id: ID!
-    user: User!
-    name: String
-    lastname: String
-    city: String
-    age: Int
-    gender: String
-    languages: [String]
-    hobbies: [String]
-    about: String
+  id: ID!
+  user: User!
+  name: String
+  lastname: String
+  city: String
+  age: Int
+  gender: String
+  languages: [String]
+  hobbies: [String]
+  about: String
 }
 
 type Profile {
-    id: ID!
-    user: User!
-    headline: String
-    location: String
-    education: String
-    work: String
+  id: ID!
+  user: User!
+  location: String
+  aboutme: String
+  lookingFor: String
+  image: String
 }
 
 type Query {
-    user(id: ID!): User
-    me: User
-    recommendations: [User]
-    connections: [User]
-    myBio: Bio
-    bio(id: ID!): Bio
-    profile(id: ID!): Profile
-    myProfile: Profile
-} 
+  user(id: ID!): User
+  me: User
+  recommendations: [User]
+  connections: [User]
+  myBio: Bio
+  bio(id: ID!): Bio
+  profile(id: ID!): Profile
+  myProfile: Profile
+}

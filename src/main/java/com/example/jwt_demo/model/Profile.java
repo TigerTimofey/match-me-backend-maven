@@ -1,12 +1,6 @@
 package com.example.jwt_demo.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -18,6 +12,7 @@ public class Profile {
     private Long id;
 
     @OneToOne
+    @MapsId
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -25,4 +20,7 @@ public class Profile {
     private String location;
     private String education;
     private String work;
-} 
+    private String aboutme;
+    private String lookingFor;
+    private String image;
+}
